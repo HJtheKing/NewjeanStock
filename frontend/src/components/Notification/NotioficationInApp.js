@@ -8,7 +8,7 @@ const NotificationInApp = () => {
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
-    apiKey: "AIzaSyD-75FRsaAEs1znFjbXmsmVDAzJpw8WToo",
+    apiKey: "",
     authDomain: "chickenstock-noti.firebaseapp.com",
     projectId: "chickenstock-noti",
     storageBucket: "chickenstock-noti.appspot.com",
