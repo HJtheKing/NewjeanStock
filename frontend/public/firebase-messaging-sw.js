@@ -4,7 +4,7 @@ importScripts(
 );
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD-75FRsaAEs1znFjbXmsmVDAzJpw8WToo",
+  apiKey: "",
   projectId: "chickenstock-noti",
   messagingSenderId: "218149229472",
   appId: "1:218149229472:web:c08a13d6182b024689cac5",
