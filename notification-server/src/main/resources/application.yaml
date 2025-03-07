@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: NotificationBackend
+  profiles:
+    active:
+      - local
+
+server:
+  port: 8083

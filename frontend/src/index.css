@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 기본 배경색 및 텍스트 색상 변수 정의 */
+:root {
+  --bg-color: #ffffff; /* 기본 배경색 */
+  --text-color: #000000; /* 기본 텍스트 색상 */
+}
+
+/* 다크 모드 배경색 및 텍스트 색상 변수 정의 */
+.dark {
+  --bg-color: #1f1f1f; /* 다크 모드 배경색 */
+  --text-color: #ffffff; /* 다크 모드 텍스트 색상 */
+}
+
+/* body 기본 스타일 적용 */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+  /* 부드러운 전환 */
+}
+
+.button-text {
+  color: #1f2937; /* gray-900 색상 */
+}
+
+/* Tailwind CSS 유틸리티 클래스와 함께 사용 */
+.bg-custom {
+  @apply bg-[var(--bg-color)]; /* CSS 변수를 사용하여 배경색 설정 */
+}
+
+.text-custom {
+  @apply text-[var(--text-color)]; /* CSS 변수를 사용하여 텍스트 색상 설정 */
+}
+
+/* 추가 스타일 예시 */
+.header {
+  @apply p-4; /* Tailwind CSS 패딩 클래스 사용 */
+}
+
+/* 다크 모드에 맞는 헤더 스타일 */
+.dark .header {
+  @apply text-custom; /* 다크 모드 텍스트 색상 적용 */
+}

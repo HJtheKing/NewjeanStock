@@ -1,0 +1,33 @@
+spring:
+  config:
+    import: optional:file:backend/StockDataService/.env[.properties]
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/newjeanstock?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 1111
+
+kis:
+  url: ${WS_URL}
+  real_port: ${REAL_PORT}
+  test_port: ${TEST_PORT}
+  trIdNames: ${TRID_NAMES}
+  trIds: ${TRIDS}
+  blue:
+    appkey: ${BLUE_APPKEY}
+    appsecret: ${BLUE_APPSECRET}
+    personalsecKey: ${BLUE_PERSONALSECKEY}
+    custType: ${BLUE_CUSTTYPE}
+    contentType: ${BLUE_CONTENTTYPE}
+    htsId: ${BLUE_HTSID}
+  green:
+    appkey: ${GREEN_APPKEY}
+    appsecret: ${GREEN_APPSECRET}
+    personalsecKey: ${GREEN_PERSONALSECKEY}
+    custType: ${GREEN_CUSTTYPE}
+    contentType: ${GREEN_CONTENTTYPE}
+    htsId: ${GREEN_HTSID}
+
+redis:
+  host: localhost
+  port: 6379
