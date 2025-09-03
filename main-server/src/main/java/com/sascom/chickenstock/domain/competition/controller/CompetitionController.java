@@ -58,4 +58,10 @@ public class CompetitionController {
 
         return ResponseEntity.ok(competitionInfoResponse);
     }
+
+    @PostMapping("/{competitionId}/finalize")
+    public ResponseEntity<Void> finalize(@PathVariable Long competitionId) {
+        competitionService.finalizeCompetition(competitionId);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -7,7 +7,7 @@ import com.sascom.chickenstock.domain.member.repository.MemberRepository;
 import com.sascom.chickenstock.domain.ranking.dto.CompetitionResultDto;
 import com.sascom.chickenstock.domain.ranking.dto.MemberRankingDto;
 import com.sascom.chickenstock.domain.ranking.dto.response.RankingListResponse;
-import com.sascom.chickenstock.domain.ranking.util.RatingCalculatorV1;
+import com.sascom.chickenstock.domain.ranking.util.RatingCalculatorV2;
 import com.sascom.chickenstock.domain.rival.repository.RivalRepository;
 import com.sascom.chickenstock.global.util.SecurityUtil;
 import jakarta.annotation.PostConstruct;
@@ -38,7 +38,7 @@ public class RankingService {
         cachedTotalRankingList = new CopyOnWriteArrayList<>(memberRepository.findAllMemberInfos());
         for (int i = 0; i < cachedTotalRankingList.size(); i++) {
             if (cachedTotalRankingList.get(i).getCompetitionCount() > 0) {
-                cachedTotalRankingList.get(i).addRating(RatingCalculatorV1.INITIAL_RATING);
+                cachedTotalRankingList.get(i).addRating(RatingCalculatorV2.INITIAL_RATING);
             }
         }
         updateRankingBoard();
@@ -143,7 +143,7 @@ public class RankingService {
                     .orElseThrow(() -> new IllegalStateException("cachedTotalRakingList Error"));
             memberRankingDto.addRating(result.ratingChange());
             if (memberRankingDto.addCompetitionCount()) {
-                memberRankingDto.addRating(RatingCalculatorV1.INITIAL_RATING);
+                memberRankingDto.addRating(RatingCalculatorV2.INITIAL_RATING);
             }
         }
         updateRankingBoard();

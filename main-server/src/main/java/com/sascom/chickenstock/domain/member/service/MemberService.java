@@ -15,7 +15,6 @@ import com.sascom.chickenstock.domain.member.error.exception.MemberInfoChangeExc
 import com.sascom.chickenstock.domain.member.repository.MemberRepository;
 import com.sascom.chickenstock.domain.ranking.dto.MemberRankingDto;
 import com.sascom.chickenstock.domain.ranking.service.RankingService;
-import com.sascom.chickenstock.domain.ranking.util.RatingCalculatorV1;
 import com.sascom.chickenstock.global.error.code.AuthErrorCode;
 import com.sascom.chickenstock.global.error.exception.AuthException;
 import com.sascom.chickenstock.global.util.SecurityUtil;
@@ -23,7 +22,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,8 +40,6 @@ import org.imgscalr.Scalr;
 public class MemberService {
     private final RankingService rankingService;
     private final MemberRepository memberRepository;
-    private final AccountRepository accountRepository;
-    private final CompetitionRepository competitionRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${image.url}")
@@ -61,13 +57,9 @@ public class MemberService {
     public MemberService(
             RankingService rankingService,
             MemberRepository memberRepository,
-            AccountRepository accountRepository,
-            CompetitionRepository competitionRepository,
             PasswordEncoder passwordEncoder) {
         this.rankingService = rankingService;
         this.memberRepository = memberRepository;
-        this.accountRepository = accountRepository;
-        this.competitionRepository = competitionRepository;
         this.passwordEncoder = passwordEncoder;
     }
 

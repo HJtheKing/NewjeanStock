@@ -9,5 +9,7 @@ import java.util.List;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     List<Account> findByMemberId(Long memberId);
 
+    List<Account> findByCompetitionId(Long competitionId);
+
     Account findTopByMemberOrderByIdDesc(Member member);
 }

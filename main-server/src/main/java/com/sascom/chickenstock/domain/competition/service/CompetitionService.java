@@ -2,7 +2,6 @@ package com.sascom.chickenstock.domain.competition.service;
 
 import com.sascom.chickenstock.domain.account.entity.Account;
 import com.sascom.chickenstock.domain.account.repository.AccountRepository;
-import com.sascom.chickenstock.domain.company.entity.Company;
 import com.sascom.chickenstock.domain.competition.dto.request.CompetitionRequest;
 import com.sascom.chickenstock.domain.competition.dto.response.CompetitionInfoResponse;
 import com.sascom.chickenstock.domain.competition.dto.response.CompetitionHistoryResponse;
@@ -11,6 +10,9 @@ import com.sascom.chickenstock.domain.competition.entity.Competition;
 import com.sascom.chickenstock.domain.competition.error.code.CompetitionErrorCode;
 import com.sascom.chickenstock.domain.competition.error.exception.CompetitionCreateException;
 import com.sascom.chickenstock.domain.competition.repository.CompetitionRepository;
+import com.sascom.chickenstock.domain.ranking.dto.CompetitionResultDto;
+import com.sascom.chickenstock.domain.ranking.service.RankingService;
+import com.sascom.chickenstock.domain.ranking.util.RatingCalculatorV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,9 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,14 +31,16 @@ public class CompetitionService {
     public static final int END_HOUR = 17;
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     private final String adminKey;
+    private RankingService rankingService;
     private CompetitionRepository competitionRepository;
     private AccountRepository accountRepository;
 
     @Autowired
-    public CompetitionService(@Value("${chicken-stock.admin-key}") String adminKey, CompetitionRepository competitionRepository, AccountRepository accountRepository){
+    public CompetitionService(@Value("${chicken-stock.admin-key}") String adminKey, CompetitionRepository competitionRepository, AccountRepository accountRepository, RankingService rankingService){
         this.adminKey = adminKey;
         this.competitionRepository = competitionRepository;
         this.accountRepository = accountRepository;
+        this.rankingService = rankingService;
     }
 
     @Transactional
@@ -150,4 +152,34 @@ public class CompetitionService {
                 competition.getEndAt()
         );
     }
+
+    @Transactional
+    public void finalizeCompetition(Long competitionId) {
+        // 1) 이번 대회 참가자 계정 로드
+        List<Account> accounts = accountRepository.findByCompetitionId(competitionId);
+        if (accounts.isEmpty()) return;
+
+        // 2) 참가자별 "대회 전 누적 레이팅" 준비
+        Map<Account, Integer> beforeMap = new HashMap<>();
+        for (Account a : accounts) {
+            Long memberId = a.getMember().getId();
+            int before = rankingService.getRankingById(memberId).getRating();
+            // 첫 참가자는 캐시에서 rating=0일 수 있으니 V2가 내부에서 INITIAL로 보정
+            beforeMap.put(a, before);
+        }
+
+        // 3) 등수 계산 (엔티티에 updateRankingAndRatingChange 반영됨)
+        RatingCalculatorV2 calculator = new RatingCalculatorV2();
+        List<Account> updated = calculator.processCompetitionResult(beforeMap);
+
+        // 4) 랭킹판 반영
+        List<CompetitionResultDto> results = updated.stream()
+                .map(a -> new CompetitionResultDto(
+                        a.getMember().getId(),
+                        a.getRatingChange()
+                ))
+                .toList();
+        rankingService.updateRankingBoardByCompetitionResult(results);
+    }
+
 }
