@@ -1,7 +1,5 @@
 package com.sascom.chickenstock.domain.account.service;
 
-import com.sascom.chickenstock.domain.account.dto.response.StockInfo;
-import com.sascom.chickenstock.domain.account.dto.response.UnexecutionContentResponse;
 import com.sascom.chickenstock.domain.trade.dto.TradeType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,18 +74,6 @@ public class RedisService {
         return !value.equals("false");
     }
 
-//    public List<StockInfo> getStockInfo(Long accountId){
-//
-//    }
-
-//    public void setStockInfo(Long accountId, Long companyId, Integer price, Integer volume) {
-//        String key = "accountId:" + accountId +":companyId:" + companyId;
-//        Map<String, String> stockData = new HashMap<>();
-//        stockData.put("price", price.toString());
-//        stockData.put("volume", volume.toString());
-//        setHashOps(key, stockData);
-//    }
-
     public Map<String, Map<String, String>> getStockInfo(Long accountId) {
         String pattern = "accountId:" + accountId + ":companyId:*";
         Set<String> keys = redisTemplate.keys(pattern);
@@ -109,33 +95,7 @@ public class RedisService {
         return StockInfo;
     }
 
-//    // 보유 주식(Redis)에 update(== set)
-//    public void updateStockInfo(Long accountId, Long companyId, int newVolume, int newPrice) {
-//        String pattern = "accountId:" + accountId + ":companyId:" + companyId;
-//        Set<String> keys = redisTemplate.keys(pattern);
-//
-//        if (keys != null && !keys.isEmpty()) {
-//            HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
-//
-//            for (String key : keys) {
-//                // 기존의 값을 가져옵니다.
-//                Map<Object, Object> entries = hashOps.entries(key);
-//
-//                // 필요한 필드만 삭제합니다.
-//                if (entries.containsKey("volume")) {
-//                    hashOps.delete(key, "volume");
-//                }
-//                if (entries.containsKey("price")) {
-//                    hashOps.delete(key, "price");
-//                }
-//
-//                // 새로운 값을 추가합니다.
-//                hashOps.put(key, "volume", String.valueOf(newVolume));
-//                hashOps.put(key, "price", String.valueOf(newPrice));
-//            }
-//        }
-//    }
-
+    // 보유 주식(Redis)에 update
     public void updateStockInfo(Long accountId, Long companyId, int changeVolume, int changePrice) {
         String pattern = "accountId:" + accountId + ":companyId:" + companyId;
         Set<String> keys = redisTemplate.keys(pattern);

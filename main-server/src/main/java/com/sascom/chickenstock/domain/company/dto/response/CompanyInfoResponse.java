@@ -16,8 +16,5 @@ public record CompanyInfoResponse(
         if (id <= 0L) {
             throw CompanyNotFoundException.of(CompanyErrorCode.INVALID_VALUE);
         }
-//        if (name == null || name.isBlank()) {
-//            throw CompanyNotFoundException.of(CompanyErrorCode.INVALID_VALUE);
-//        }
     }
 }

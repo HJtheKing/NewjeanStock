@@ -62,7 +62,6 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RequestSignupMember requestSignupMember) {
         authService.signup(requestSignupMember);
-//        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, BASE_URI).body("회원가입이 처리되었습니다!");
         return ResponseEntity.ok("회원가입이 처리되었습니다!");
     }
 

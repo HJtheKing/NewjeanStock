@@ -13,7 +13,4 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
     @Query("SELECT h FROM History h WHERE h.account.id = :accountId AND (h.status = '매수체결' OR h.status = '매도체결')")
     List<History> findExecutionContent(@Param("accountId") Long accountId);
-
-//    @Query("SELECT h FROM History h WHERE h.account.id = :accountId")
-//    List<History> findByAccountId(@Param("accountId") Long accountId);
 }

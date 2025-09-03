@@ -30,7 +30,6 @@ public class WebSocketClientInitializer implements InitializingBean {
     public void afterPropertiesSet() {
         try {
             StompSession session = stompClient.connectAsync(url, stompSessionHandler).get();
-//            System.out.println("WebSocket connection initialized");
         } catch (Exception e) {
             e.printStackTrace();
         }

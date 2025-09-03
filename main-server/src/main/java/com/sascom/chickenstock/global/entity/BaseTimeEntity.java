@@ -16,9 +16,7 @@ import java.time.ZoneId;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTimeEntity {
-//    @CreatedDate
     private LocalDateTime createdAt;
-//    @LastModifiedDate
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 

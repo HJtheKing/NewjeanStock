@@ -54,12 +54,6 @@ public class DailyStockPriceService {
         return dailyStockPriceResponseList;
     }
 
-//    public Long getLatestClosingPriceByCompanyId(Long companyId) {
-//        DailyStockPrice dailyStockPrice = dailyStockPriceRepository.findFirstByCompanyIdOrderByDateTimeDesc(companyId)
-//                .orElseThrow(() -> CompanyNotFoundException.of(CompanyErrorCode.NOT_FOUND));
-//        return dailyStockPrice.getClosingPrice();
-//    }
-
     // 매일 18시에 실행
     @Scheduled(cron = "0 0 18 * * *")
     public List<DailyStockPrice> automaticSaveDailyStockPrice() {

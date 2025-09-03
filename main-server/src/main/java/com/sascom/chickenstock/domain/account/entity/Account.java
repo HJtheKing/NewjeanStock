@@ -52,12 +52,8 @@ public class Account extends BaseTimeEntity {
         }
         this.ranking = ranking;
         this.ratingChange = ratingChange;
-        return;
     }
 
-    public Long updateBalance(long value) {
-        return balance += value;
-    }
 
     public Account(Member member, Competition competition) {
         this.member = member;

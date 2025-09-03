@@ -43,7 +43,6 @@ public abstract class TradeRequest {
      *         + if orderTime of this is  later  than that of other.
      */
     public final int compareByOrderTime(TradeRequest other) {
-        // ?? other.orderTime해도 compile error가 뜨지 않아요... 왜그럴까유?
         return this.orderTime.compareTo(other.getOrderTime());
     }
     /**

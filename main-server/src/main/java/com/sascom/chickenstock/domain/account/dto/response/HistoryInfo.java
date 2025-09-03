@@ -1,6 +1,5 @@
 package com.sascom.chickenstock.domain.account.dto.response;
 
-import com.sascom.chickenstock.domain.history.entity.History;
 import com.sascom.chickenstock.domain.history.entity.HistoryStatus;
 
 import java.time.LocalDateTime;

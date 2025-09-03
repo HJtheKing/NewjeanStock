@@ -14,7 +14,6 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -45,21 +44,11 @@ public class RankingService {
         updateRankingBoard();
     }
 
-//    @Transactional(readOnly = true)
-//    public RankingListResponse lookUpPaginationRanking(int offset) {
-//        List<MemberRankingDto> result = memberRepository.test((offset - 1) * 10);
-//        return RankingListResponse.builder()
-//                .memberList(result)
-//                .build();
-//    }
-
     public RankingListResponse lookUpPaginationTotalRanking(int offset) {
         if (cachedTotalRankingList == null) {
             // TODO: change into ranking exception
             throw new IllegalStateException("server logic error");
         }
-
-        // later, pageSize can be parameter passed from request.
 
         // invalid offset error
         if (cachedTotalRankingList.isEmpty()) {

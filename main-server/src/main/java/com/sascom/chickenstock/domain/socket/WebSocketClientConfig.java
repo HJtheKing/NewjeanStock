@@ -1,7 +1,6 @@
 package com.sascom.chickenstock.domain.socket;
 
 
-import com.sascom.chickenstock.domain.trade.dto.RealStockTradeDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.CompositeMessageConverter;

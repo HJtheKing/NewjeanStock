@@ -7,5 +7,4 @@ import lombok.Builder;
 @Builder
 public record TradeResponse(
         TradeStatus status
-//        TradeRequest tradeRequest
 ) { }

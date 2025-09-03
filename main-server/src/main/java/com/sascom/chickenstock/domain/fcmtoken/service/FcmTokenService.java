@@ -27,11 +27,6 @@ public class FcmTokenService {
 
     public FcmTokenResponse storeFcmToken(Long memberId, String newToken) {
 
-//        Long loginMemberId = SecurityUtil.getCurrentMemberId();
-//        if (!loginMemberId.equals(memberId)) {
-//            throw new IllegalArgumentException("로그인 멤버가 일치하지 않습니다.");
-//        }
-
         Optional<FcmToken> candiFcmToken = fcmTokenRepository.findByMemberId(memberId);
         candiFcmToken.ifPresentOrElse(
                 (oldToken) -> oldToken.updateToken(newToken),

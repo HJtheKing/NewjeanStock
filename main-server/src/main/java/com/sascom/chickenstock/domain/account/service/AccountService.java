@@ -78,45 +78,7 @@ public class AccountService {
         return accountRepository.save(account).getId();
     }
 
-    // 계좌 정보 조회 (기존 방식)
-//    public AccountInfoResponse getAccountInfo(Long accountId) {
-//        // 계좌 repo에서 계좌id로 계좌 객체 끌고오기
-//        Account account = accountRepository.findById(accountId).
-//                orElseThrow(EntityNotFoundException::new);
-//
-//        // 주식들 정보 담긴 리스트 객체
-//        List<StockInfo> stocks = new ArrayList<>();
-//        // 사용자 주식 정보 조회
-//        Map<String, Map<String, String>> allStockInfo = redisService.getStockInfo(accountId);
-//        for (Map.Entry<String, Map<String, String>> entry : allStockInfo.entrySet()) {
-//            String key = entry.getKey();
-//            Map<String, String> stockData = entry.getValue();
-//            StringTokenizer st = new StringTokenizer(key, ":");
-//            st.nextToken();
-//            st.nextToken();
-//            st.nextToken();
-//            Long companyId = Long.valueOf(st.nextToken());
-//            Company company = companyService.findById(companyId);
-//
-//            // 새로운 주식 정보 추기?
-//            stocks.add(new StockInfo(company.getName(),
-//                    Integer.valueOf(stockData.get("price")),
-//                    Integer.valueOf(stockData.get("volume")))
-//            );
-//        }
-//
-//        // 사용자 계좌 잔고 조회
-//        AccountInfoResponse accountInfoResponse = new AccountInfoResponse(
-//                account.getBalance(),
-//                stocks
-//        );
-//
-//        // 임시로 주석
-////        AccountInfoResponse response = tradeService.getAccountInfo(accountId);
-//
-//        return accountInfoResponse;
-//    }
-
+    // 계좌 정보 조회
     public AccountInfoResponseV2 getAccountInfoV2(Long accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> AccountNotFoundException.of(AccountErrorCode.NOT_FOUND));
@@ -141,7 +103,7 @@ public class AccountService {
     }
 
 
-    // 지정가 매수(신규 메소드)
+    // 지정가 매수
     @Transactional
     public TradeResponse buyLimitStocks(BuyLimitOrderRequest buyLimitOrderRequest) throws Exception {
         // 유효성 검증
@@ -175,7 +137,7 @@ public class AccountService {
         return new TradeResponse(tradeStatus);
     }
 
-    // 지정가 매도(신규 메소드)
+    // 지정가 매도
     @Transactional
     public TradeResponse sellLimitStocks(SellLimitOrderRequest sellLimitOrderRequest) {
         validateStockOrderRequest(sellLimitOrderRequest);
@@ -200,7 +162,7 @@ public class AccountService {
         return new TradeResponse(tradeStatus);
     }
 
-    // 시장가 매수(신규 메소드)
+    // 시장가 매수
     @Transactional
     public TradeResponse buyMarketStocks(BuyMarketOrderRequest buyMarketOrderRequest) {
         validateStockOrderRequest(buyMarketOrderRequest);
@@ -224,7 +186,7 @@ public class AccountService {
         return new TradeResponse(tradeStatus);
     }
 
-    // 시장가 매도(신규 메소드)
+    // 시장가 매도
     @Transactional
     public TradeResponse sellMarketStocks(SellMarketOrderRequest sellMarketOrderRequest) {
         validateStockOrderRequest(sellMarketOrderRequest);
@@ -248,80 +210,10 @@ public class AccountService {
         return new TradeResponse(tradeStatus);
     }
 
-//    // 결제 취소
-//    @Transactional
-//    public CancelOrderResponse cancelStockOrder(CancelOrderRequest cancelOrderRequest) {
-//        // validate member
-//        Member member = validateMember(cancelOrderRequest.memberId());
-//
-//        // validate account
-//        Account account = validateAccount(member, cancelOrderRequest.accountId(), cancelOrderRequest.competitionId());
-//
-//        // validate history
-//        History history = validateHistory(account, cancelOrderRequest.historyId());
-//
-//        CancelOrderResponse response = null;
-//        if(HistoryStatus.지정가매도요청.equals(history.getStatus()) ||
-//                HistoryStatus.시장가매도요청.equals(history.getStatus())) {
-//            SellTradeRequest sellTradeRequest = SellTradeRequest.builder()
-//                    .orderType(HistoryStatus.지정가매도요청.equals(history.getStatus())?
-//                            OrderType.LIMIT :
-//                            OrderType.MARKET)
-//                    .accountId(cancelOrderRequest.accountId())
-//                    .memberId(cancelOrderRequest.memberId())
-//                    .companyId(history.getCompany().getId())
-//                    .competitionId(account.getCompetition().getId())
-//                    .historyId(history.getId())
-//                    .unitCost(history.getPrice())
-//                    .totalOrderVolume(history.getVolume())
-//                    .orderTime(history.getCreatedAt())
-//                    .build();
-//            response = tradeService.cancelOrderRequest(sellTradeRequest);
-//        }
-//        if(HistoryStatus.지정가매수요청.equals(history.getStatus()) ||
-//                HistoryStatus.시장가매수요청.equals(history.getStatus())) {
-//            BuyTradeRequest buyTradeRequest = BuyTradeRequest.builder()
-//                    .orderType(HistoryStatus.지정가매수요청.equals(history.getStatus())?
-//                            OrderType.LIMIT :
-//                            OrderType.MARKET)
-//                    .accountId(cancelOrderRequest.accountId())
-//                    .memberId(cancelOrderRequest.memberId())
-//                    .companyId(history.getCompany().getId())
-//                    .competitionId(account.getCompetition().getId())
-//                    .historyId(history.getId())
-//                    .unitCost(history.getPrice())
-//                    .totalOrderVolume(history.getVolume())
-//                    .orderTime(history.getCreatedAt())
-//                    .build();
-//            response = tradeService.cancelOrderRequest(buyTradeRequest);
-//        }
-//        if(response == null) {
-//            throw new IllegalStateException("server error");
-//        }
-//        return response;
-//    }
-
     // 미체결 내역 조회
-//    public UnexecutionContentResponse getUnexecutionContent(Long accountId) {
-//        Map<String,Map<String,String>> Unexcuted = redisService.getUnexcutionContent(accountId);
-//        List<UnexcutedStockInfo> unexcutedStockInfos = new ArrayList<>();
-//
-//        for (Map.Entry<String, Map<String, String>> entry : Unexcuted.entrySet()) {
-//            Map<String, String> stockData = entry.getValue();
-//
-//            unexcutedStockInfos.add(new UnexcutedStockInfo(Long.valueOf("companyId"),
-//                    Integer.valueOf(stockData.get("price")),
-//                    Integer.valueOf(stockData.get("volume")),
-//                    TradeType.valueOf(stockData.get("tradeType")))
-//            );
-//        }
-//        return new UnexecutionContentResponse(unexcutedStockInfos);
-//    }
-
     public UnexecutedStockInfoResponseV2 getUnexecutedContentV2(Long accountId) {
         return tradeService.getBookList(accountId);
     }
-
 
     @Transactional
     public TradeResponse cancelStockOrderV2(CancelOrderRequestV2 cancelOrderRequest) {
