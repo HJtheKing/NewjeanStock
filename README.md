@@ -7,7 +7,7 @@
 
 **“뉴진스톡”** 서비스는 계속해서 높아지는 주식 투자에 대한 청년층의 관심에 대해 청년의 건전한 금융생활을 지원하기 위한 서비스입니다. 
 
- 가능한 한 실전에 가까운 서비스 구성을 통해 주식을 처음 접하는 사람들에게 손쉬운 연습 환경을 제공하고 랭킹 시스템을 통해 사용자의 주식 투자 실력을 판단할 수 있는 지표를 제공함으로써 무분별한 투자를 예방하는 것을 목표로 하고 있습니다.
+ **실제 투자에 가까운 서비스 구성**을 통해 주식을 처음 접하는 사람들에게 손쉬운 연습 환경을 제공하고 **랭킹 시스템**을 통해 사용자의 주식 투자 실력을 판단할 수 있는 지표를 제공함으로써 체계적인 투자 습관 형성을 돕는 것을 목표로 하고 있습니다.
 <br/>
 <br/>
 
@@ -19,6 +19,9 @@
 - OAuth2.0을 이용한 소셜 로그인
 - JWT 토큰 기반 사용자 인가
 
+<img src="img/3.png" width="450"/>
+<br/>
+
 **2️⃣ 모의 투자**
 
 - 시장가 매수 및 매도, 지정가 매수 및 매도
@@ -27,13 +30,24 @@
 - 보유주식 및 잔고 조회 기능
 - 거래 체결 알림 기능
 
-**3️⃣ 랭킹** 
+|<img src="img/8.png" width="300"/> | <img src="img/8-1.png" width="250"/>|
+|--|--|
 
+|<img src="img/9.png" width="300"/> | <img src="img/10.png" width="300"/>|
+|--|--|
+<br/>
+<br/>
+
+**3️⃣ 경쟁 시스템** 
+
+- **Codeforces**의 **ELO Rating System**을 차용한 레이팅 시스템
+    - 참가자들을 1:1로 가상 대결, 이길 확률과 예상 순위 계산
+    - 예상 순위를 달성하기 위한 실력치(Performance Rating) 산출
+    - 현재 점수와 실력치 차이를 반영해 레이팅 조정
 - 주식 대회 종료 시 해당 대회의 수익률을 기반으로 Rating에 반영
-- 체스의 ELO Rating System을 차용한 레이팅 시스템
-    - 대회 참여자 간 모든 1:1 쌍에 대해 ELO Rating 계산식을 적용하여 승률, 예상 등수 계산
-    - 현재 대회에서 예상 등수를 얻기 위한 Performance Rating을 예측
-    - 자신의 Rating과 Performance Rating 차이를 바탕으로 현재 Rating에 결과 반영
+
+|<img src="img/11.png" width="300"/> | <img src="img/12.png" width="300"/>|
+|--|--|
 
 **4️⃣ 마이페이지**
 
@@ -68,7 +82,6 @@
 ### **Architecture**
 <img src="img/NJST_arc.png" width="700"/>
 <br/>
-<br/>
 
 ### **UX/UI**
 ![image](https://github.com/user-attachments/assets/c38fd855-5009-4ba6-9b7e-2be75f67bb65)
@@ -80,11 +93,6 @@
 <br/>
 <br/>
 
-### **Flow Chart**
-
-Flow Chart 이미지
-<br/>
-<br/>
 
 ## Contact.
 |<img src="https://avatars.githubusercontent.com/u/102630597?s=400&u=bf0043f58745c8dc23e603730607d514ec522343&v=4" width="100px" height="100px">|<img src="https://avatars.githubusercontent.com/u/103047410?v=4" width="100px" height="100px">|<img src="https://avatars.githubusercontent.com/u/118046174?v=4" width="100px" height="100px">|<img src="https://avatars.githubusercontent.com/u/122759610?v=4" width="100px" height="100px">|<img src="https://avatars.githubusercontent.com/u/96874470?v=4" width="100px" height="100px">
