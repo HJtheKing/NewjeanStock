@@ -66,7 +66,7 @@
 
 
 ### **Architecture**
-![image](https://github.com/user-attachments/assets/f517e378-bbdb-45e5-a540-8c4aece6b185)
+<img src="img/NJST_arc.png" width="700"/>
 <br/>
 <br/>
 
