@@ -1,0 +1,1 @@
+package com.sascom.chickenstock.account.infra.repo; import com.sascom.chickenstock.account.domain.MarginLedger; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface MarginLedgerRepository extends JpaRepository<MarginLedger, Long> { Optional<MarginLedger> findByAccountIdAndCompanyId(Long accountId, Long companyId); }

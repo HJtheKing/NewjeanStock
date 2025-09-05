@@ -1,0 +1,1 @@
+package com.sascom.chickenstock.account.api.dto; public record AccountSettleResponse(Long orderId, Long settledAmount, Long preReservedConsumed, Long borrowedConsumed, Long balanceDelta) {}

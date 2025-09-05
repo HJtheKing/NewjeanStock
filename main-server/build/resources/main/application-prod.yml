@@ -6,15 +6,19 @@ spring:
     password: ${MYSQL_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true
+#  sql:
+#    init:
+#      mode: always
   data:
     redis:
       host: ${REDIS_DEV_HOST}
-      port: ${REDIS_DEVoc_PORT}
+      port: ${REDIS_DEV_PORT}
 #  jackson:
 #    property-naming-strategy: SNAKE_CASE
 #  sql:
@@ -60,5 +64,8 @@ kafka:
     key-serializer: ${KAFKA_KEY_SERIALIZER}
     value-serializer: ${KAFKA_VALUE_SERIALIZER}
     topic:
-      email: ${KAFKA_EMAIL_TOPIC}
-      fcm: ${KAFKA_FCM_TOPIC}
+      portfolio-compensated: ${PORTFOLIO_COMPENSATED}
+
+svc:
+  account : ${SVC_ACCOUNT}
+  portfolio : ${SVC_PORTFOLIO}

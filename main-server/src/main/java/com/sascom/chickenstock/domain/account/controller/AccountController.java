@@ -38,13 +38,6 @@ public class AccountController {
         return accountService.getExecutionContent(accountId);
     }
 
-    // 미체결 정보 조회
-    @GetMapping("/v2/{accountId}/unexecution")
-    public ResponseEntity<UnexecutedStockInfoResponseV2> getUnexecutedStockInfoV2(@PathVariable("accountId") Long accountId) {
-        UnexecutedStockInfoResponseV2 response =  accountService.getUnexecutedContentV2(accountId);
-        return ResponseEntity.ok().body(response);
-    }
-
     // 지정가 매수
     @PostMapping("/v2/buy/limit")
     public ResponseEntity<TradeResponse> buyLimitStocks(@RequestBody BuyLimitOrderRequest buyLimitOrderRequest) throws Exception{

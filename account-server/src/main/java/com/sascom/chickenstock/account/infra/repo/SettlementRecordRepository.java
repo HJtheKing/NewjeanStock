@@ -1,0 +1,1 @@
+package com.sascom.chickenstock.account.infra.repo; import com.sascom.chickenstock.account.domain.SettlementRecord; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface SettlementRecordRepository extends JpaRepository<SettlementRecord, Long> { Optional<SettlementRecord> findByOrderIdAndAccountId(Long orderId, Long accountId); }

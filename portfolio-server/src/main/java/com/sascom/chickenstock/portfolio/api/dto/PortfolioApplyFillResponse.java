@@ -1,0 +1,1 @@
+package com.sascom.chickenstock.portfolio.api.dto; public record PortfolioApplyFillResponse(Long orderId, Long qtyApplied, Long avgPrice) {}

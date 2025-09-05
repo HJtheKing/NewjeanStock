@@ -1,0 +1,1 @@
+package com.sascom.chickenstock.portfolio.infra.repo; import com.sascom.chickenstock.portfolio.domain.Position; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface PositionRepository extends JpaRepository<Position, Long> { Optional<Position> findByAccountIdAndCompanyId(Long accountId, Long companyId); }

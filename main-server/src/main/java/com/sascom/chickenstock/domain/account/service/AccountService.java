@@ -57,11 +57,8 @@ public class AccountService {
     private final HistoryRepository historyRepository;
     private final MemberRepository memberRepository;
     private final CompetitionRepository competitionRepository;
-    private final RedisService redisService;
-    //private final TradeService tradeService;
     private final TradeServiceV2 tradeService;
     private final CompetitionService competitionService;
-    private final CompanyService companyService;
     private final CompanyRepository companyRepository;
 
     // 계좌 생성
@@ -208,11 +205,6 @@ public class AccountService {
             tradeStatus = TradeStatus.FAILURE;
         }
         return new TradeResponse(tradeStatus);
-    }
-
-    // 미체결 내역 조회
-    public UnexecutedStockInfoResponseV2 getUnexecutedContentV2(Long accountId) {
-        return tradeService.getBookList(accountId);
     }
 
     @Transactional

@@ -1,0 +1,1 @@
+package com.sascom.chickenstock.account.infra.repo; import com.sascom.chickenstock.account.domain.Account; import org.springframework.data.jpa.repository.JpaRepository; public interface AccountRepository extends JpaRepository<Account, Long> {}

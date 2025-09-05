@@ -1,0 +1,1 @@
+package com.sascom.chickenstock.portfolio.infra.repo; import com.sascom.chickenstock.portfolio.domain.FillRecord; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface FillRecordRepository extends JpaRepository<FillRecord, Long> { Optional<FillRecord> findByOrderIdAndAccountId(Long orderId, Long accountId); }

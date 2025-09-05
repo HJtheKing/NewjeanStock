@@ -1,7 +1,6 @@
 package com.sascom.chickenstock.global.config;
 
-import com.sascom.chickenstock.global.kafkaproducer.dto.NotificationMessageDto;
-import com.sascom.chickenstock.global.kafkaproducer.properties.ProducerProperties;
+import com.sascom.chickenstock.global.kafka.kafkaproducer.ProducerProperties;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -22,20 +21,17 @@ public class KafkaProducerConfig {
     private final ProducerProperties producerProperties;
 
     @Bean
-    public ProducerFactory<String, NotificationMessageDto> producerFactory() {
+    public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, producerProperties.bootstrapServers());
-
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class);
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                JsonSerializer.class);
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
         return new DefaultKafkaProducerFactory<>(config);
     }
 
     @Bean
-    public KafkaTemplate<String, NotificationMessageDto> kafkaTemplate() {
+    public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

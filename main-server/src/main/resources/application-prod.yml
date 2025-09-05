@@ -64,5 +64,13 @@ kafka:
     key-serializer: ${KAFKA_KEY_SERIALIZER}
     value-serializer: ${KAFKA_VALUE_SERIALIZER}
     topic:
-      email: ${KAFKA_EMAIL_TOPIC}
-      fcm: ${KAFKA_FCM_TOPIC}
+      portfolio-compensated: ${PORTFOLIO_COMPENSATED}
+
+svc:
+  account : ${SVC_ACCOUNT}
+  portfolio : ${SVC_PORTFOLIO}
+
+http:
+  timeout:
+    connect-ms: 1500
+    read-ms: 3000

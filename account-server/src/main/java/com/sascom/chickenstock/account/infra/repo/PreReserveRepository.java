@@ -1,0 +1,1 @@
+package com.sascom.chickenstock.account.infra.repo; import com.sascom.chickenstock.account.domain.PreReserve; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface PreReserveRepository extends JpaRepository<PreReserve, Long> { Optional<PreReserve> findByOrderIdAndAccountId(Long orderId, Long accountId); }

@@ -1,5 +1,7 @@
 package com.sascom.chickenstock.domain.trade.service;
 
+import com.sascom.chickenstock.domain.account.dto.response.AccountInfoResponseV2;
+import com.sascom.chickenstock.domain.account.dto.response.StockInfoV2;
 import com.sascom.chickenstock.domain.history.entity.TradeHistory;
 import com.sascom.chickenstock.domain.history.service.HistoryService;
 import com.sascom.chickenstock.domain.orderbook.engine.MatchingEngine;
@@ -8,10 +10,17 @@ import com.sascom.chickenstock.domain.orderbook.dto.Side;
 import com.sascom.chickenstock.domain.orderbook.util.FillEvent;
 import com.sascom.chickenstock.domain.orderbook.dto.Order;
 import com.sascom.chickenstock.domain.trade.dto.RealStockTradeDtoV2;
+import com.sascom.chickenstock.global.events.*;
+import com.sascom.chickenstock.global.kafka.kafkaproducer.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -21,14 +30,22 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 @RequiredArgsConstructor
 public class TradeServiceV2 {
+    private final RestTemplate restTemplate;
+    private final KafkaProducer kafkaProducer;
+    @Value("${svc.account}")
+    private String accountBaseUrl;
+    @Value("${svc.portfolio}")
+    private String portfolioBaseUrl;
     private final HistoryService historyService;
 
-    private static final long INIT_BALANCE = 50_000_000L; // 계좌 최초 생성 시 초기 예치금(대회 초기 자금)
-    private static final int MARGIN_RATE = 10;            // 증거금 10%
+    private static final long INIT_BALANCE = 50_000_000L;
+    private static final int MARGIN_RATE = 10;
 
     private final MatchingEngine matchingEngine = new MatchingEngine(this::handleFill);
     private final AtomicLong orderIdSeq = new AtomicLong(1L);
 
+    private List<UserStockInfo> userStockInfos;
+    private Map<Long, Long> indexMap;
     private final ConcurrentMap<Long, UserState> accounts = new ConcurrentHashMap<>();
     private final ConcurrentMap<Long, OrderMeta> orderMetaIndex = new ConcurrentHashMap<>();
     private final ConcurrentMap<Long, Long> preReservedLeft = new ConcurrentHashMap<>();
@@ -148,6 +165,49 @@ public class TradeServiceV2 {
         } catch (Exception ex) {
             log.error("체결 이력 저장 실패: orderId={}, acc={}, comp={}", e.orderId, e.accountId, e.companyId, ex);
         }
+
+        try {
+            // 1) 계좌 정산 요청
+            String accountUrl = accountBaseUrl + "/v1/accounts/settle";
+            AccountSettleRequest req = new AccountSettleRequest(
+                    e.orderId, e.accountId, e.companyId, e.side.name(), e.price, e.quantity, e.margin
+            );
+            AccountSettleResponse settleRes = restTemplate.postForObject(
+                    accountUrl, req, AccountSettleResponse.class
+            );
+            log.info("Account settled: {}", settleRes);
+
+        } catch (Exception ex) {
+            log.error("Orchestration failed for orderId={}", e.orderId, ex);
+        }
+
+        try {
+            // 2) 포트폴리오 반영 요청
+            String portfolioUrl = portfolioBaseUrl + "/v1/positions/" + e.accountId + "/apply-fill";
+            PortfolioApplyFillRequest preq = new PortfolioApplyFillRequest(
+                    e.orderId, e.accountId, e.companyId, e.side.name(), e.price, e.quantity
+            );
+            PortfolioApplyFillResponse pres = restTemplate.postForObject(
+                    portfolioUrl, preq, PortfolioApplyFillResponse.class
+            );
+            log.info("Portfolio applied: {}", pres);
+        } catch (HttpStatusCodeException | ResourceAccessException ex) {
+            log.error("[ACCOUNT] call failed orderId={}, msg={}", e.orderId, ex.getMessage());
+
+            String statusUrl = accountBaseUrl + "/v1/accounts/" + e.accountId + "/settlements/" + e.orderId;
+            AccountSettleStatusResponse status = restTemplate.getForObject(statusUrl, AccountSettleStatusResponse.class);
+            if (status != null && "APPLIED".equalsIgnoreCase(status.status())) {
+                log.warn("[ACCOUNT] POST failed but status=APPLIED. Continue. orderId={}", e.orderId);
+            }
+        } catch (Exception ex) {
+            log.error("Orchestration failed for orderId={}", e.orderId, ex);
+
+            PortfolioCompensationEvent event = new PortfolioCompensationEvent(
+                    e.orderId, e.accountId, e.companyId, e.side.name(),
+                    "HTTP_FAILED", System.currentTimeMillis()
+            );
+            kafkaProducer.publishPortfolioCompensation(event);
+        }
     }
 
     private long preReserveCashForBuy(UserState st, Long accountId, Long companyId, Long unitPrice, Long volume, boolean margin) {
@@ -255,6 +315,26 @@ public class TradeServiceV2 {
         return p;
     }
 
+    public AccountInfoResponseV2 getAccountInfo(Long accountId) {
+        UserStockInfo userStockInfo = userStockInfos.get((int) getUserIndex(accountId));
+        List<StockInfoV2> stockInfoList = userStockInfo.holdings
+                .entrySet()
+                .stream()
+                .map(entry -> new StockInfoV2(
+                        entry.getKey(),
+                        entry.getValue().priceSum,
+                        entry.getValue().totalVolume)
+                ).toList();
+        return new AccountInfoResponseV2(userStockInfo.balance, stockInfoList);
+    }
+    private long getUserIndex(Long accountId){
+        if(!indexMap.containsKey(accountId)){
+            indexMap.put(accountId, orderIdSeq.getAndIncrement());
+            userStockInfos.add(new UserStockInfo());
+        }
+        return indexMap.get(accountId);
+    }
+
     private static class UserState {
         long balance = INIT_BALANCE;
         boolean frozenAccount = false;
@@ -269,4 +349,9 @@ public class TradeServiceV2 {
     }
 
     private record OrderMeta(Long companyId, Side side, OrderType type, boolean margin, long preReservedAmount) {}
+
+    private class UserStockInfo {
+        Long balance;
+        Map<Long, StockDetails> holdings;
+    }
 }

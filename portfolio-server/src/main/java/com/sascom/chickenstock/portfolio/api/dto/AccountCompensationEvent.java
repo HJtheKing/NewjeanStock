@@ -1,0 +1,1 @@
+package com.sascom.chickenstock.portfolio.api.dto; public record AccountCompensationEvent(Long orderId, Long accountId, Long companyId, String side, String reason, Long occurredAt) {}

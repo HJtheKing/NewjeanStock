@@ -1,0 +1,1 @@
+package com.sascom.chickenstock.account.domain; public enum SettlementStatus { PENDING, APPLIED, FAILED }
